@@ -1,0 +1,147 @@
+{\rtf1\ansi\ansicpg1252\cocoartf2761
+\cocoatextscaling0\cocoaplatform0{\fonttbl\f0\fswiss\fcharset0 Helvetica;\f1\fnil\fcharset0 Menlo-Regular;}
+{\colortbl;\red255\green255\blue255;\red0\green0\blue0;}
+{\*\expandedcolortbl;;\csgray\c0;}
+\margl1440\margr1440\vieww11520\viewh8400\viewkind0
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 /*\
+Written below are the Data Definition Language SQL Queries executed to create the tables\
+in the database. These statements were executed in order\
+*/\
+\
+CREATE TABLE College (\
+cname varchar(255) NOT NULL, \
+coffice varchar(255), \
+cphone varchar(255),\
+dean_id INT NOT NULL,\
+PRIMARY KEY (cname)\
+);\
+\
+CREATE TABLE Instructor (\
+ins_id INT NOT NULL, \
+ins_name varchar(255), \
+ins_office varchar(255),\
+ins_rank varchar(255),\
+ins_phone varchar(255),\
+d_code INT NOT NULL,\
+PRIMARY KEY (ins_id)\
+);\
+\
+\
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f1\fs22 \cf2 \CocoaLigature0 ALTER TABLE College \
+ADD CONSTRAINT college_fk_ins_id \
+FOREIGN KEY (dean_id) \
+REFERENCES Instructor(ins_id);\
+\
+\
+\pard\tx720\tx1440\tx2160\tx2880\tx3600\tx4320\tx5040\tx5760\tx6480\tx7200\tx7920\tx8640\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \CocoaLigature1 CREATE TABLE Department (\
+dcode INT NOT NULL, \
+dname varchar(255), \
+doffice varchar(255),\
+dphone varchar(255),\
+chair_id INT NOT NULL,\
+chair_start_date DATETIME,\
+cname varchar(255) NOT NULL,\
+PRIMARY KEY (d_code)\
+);\
+\
+ALTER TABLE Instructor\
+ADD CONSTRAINT instructor_fk_d_code\
+FOREIGN KEY (d_code)\
+REFERENCES Department(dcode);\
+\
+ALTER TABLE Department\
+ADD CONSTRAINT department_fk_chair_id\
+FOREIGN KEY (chair_id)\
+REFERENCES Instructor(ins_id);
+\f1\fs22 \cf2 \CocoaLigature0 \
+\pard\tx560\tx1120\tx1680\tx2240\tx2800\tx3360\tx3920\tx4480\tx5040\tx5600\tx6160\tx6720\pardirnatural\partightenfactor0
+
+\f0\fs24 \cf0 \CocoaLigature1 \
+\
+ALTER TABLE Department\
+ADD CONSTRAINT department_fk_cname\
+FOREIGN KEY (cname)\
+REFERENCES College(cname);\
+\
+\
+CREATE TABLE Course(\
+co_code INT NOT NULL,\
+co_name varchar(255),\
+co_credit DOUBLE,\
+co_desc varchar(255),\
+co_level INT,\
+dcode INT NOT NULL,\
+PRIMARY KEY (co_code)\
+);\
+\
+ALTER TABLE Course\
+ADD CONSTRAINT course_fk_dcode\
+FOREIGN KEY (dcode)\
+REFERENCES Department(dcode);\
+\
+\
+CREATE TABLE Section(\
+sec_id INT NOT NULL,\
+sec_number INT,\
+sec_sem INT,\
+sec_days_time varchar(255),\
+sec_bldg varchar(255),\
+sec_room_no INT,\
+co_code INT NOT NULL,\
+ins_id INT NOT NULL,\
+PRIMARY KEY (sec_id)\
+);\
+\
+ALTER TABLE Section\
+ADD CONSTRAINT section_fk_co_code\
+FOREIGN KEY (co_code)\
+REFERENCES Course(co_code);\
+\
+ALTER TABLE Section\
+ADD CONSTRAINT section_fk_ins_id\
+FOREIGN KEY (ins_id)\
+REFERENCES Instructor(ins_id);\
+\
+\
+CREATE TABLE Student(\
+stud_id INT NOT NULL,\
+stud_fname varchar(255),\
+stud_mname varchar(255),\
+stud_lname varchar(255),\
+stud_address varchar(255),\
+stud_maj_code varchar(255),\
+stud_dob DATETIME,\
+d_code INT NOT NULL,\
+PRIMARY KEY (stud_id)\
+);\
+\
+ALTER TABLE Student\
+ADD CONSTRAINT student_fk_d_code\
+FOREIGN KEY (d_code)\
+REFERENCES Department(dcode);\
+\
+CREATE TABLE Student_Section(\
+id INT AUTO_INCREMENT,\
+stud_id INT NOT NULL,\
+sec_id INT NOT NULL,\
+stud_grade DOUBLE,\
+PRIMARY KEY (id)\
+);\
+\
+ALTER TABLE Student_Section\
+ADD CONSTRAINT student_section_fk_stud_id\
+FOREIGN KEY (stud_id)\
+REFERENCES Student(stud_id);\
+\
+ALTER TABLE Student_Section\
+ADD CONSTRAINT student_section_fk_sec_id\
+FOREIGN KEY (sec_id)\
+REFERENCES Section(sec_id);\
+\
+}
