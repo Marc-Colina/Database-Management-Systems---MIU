@@ -1,0 +1,1 @@
+CREATE INDEX employee_name_position ON Employee(EmployeeName, EmployeePosition);
