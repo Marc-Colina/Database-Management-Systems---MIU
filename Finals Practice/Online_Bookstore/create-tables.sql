@@ -63,3 +63,4 @@ CREATE TABLE Review(
     FOREIGN KEY (Order_ID) REFERENCES `Order`(Order_Id),
     FOREIGN KEY (Isbn) REFERENCES Book(Isbn)
 );
+

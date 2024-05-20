@@ -131,3 +131,75 @@ FROM
     JOIN Author ON Book.Author_ID = Author.Author_ID
 WHERE
     Order_Details.Isbn IS NULL;
+
+--Find the name and contact information of customers who have ordered books priced over $20.
+SELECT
+    DISTINCT Customer_Name,
+    Contact_Info
+FROM
+    Customer c
+WHERE
+    Customer_ID IN (
+        SELECT
+            o.Customer_ID
+        FROM
+            `Order` o
+            JOIN Order_Details od ON od.Order_ID = o.Order_ID
+            JOIN Book b ON b.Isbn = od.Isbn
+        WHERE
+            b.Price > 20
+    );
+
+--List all books that have never been ordered.
+SELECT
+    b.Title
+FROM
+    Book b
+    LEFT JOIN Order_Details od ON od.Isbn = b.Isbn
+WHERE
+    od.Isbn IS NULL;
+
+--Show the average book price by year, only for years with more than 5 books published.
+SELECT
+    Pub_Year,
+    COUNT(*),
+    AVG(Price)
+FROM
+    Book
+GROUP BY
+    Pub_Year
+HAVING
+    COUNT(*) > 5;
+
+-- Identify authors who have both the highest and lowest average book ratings.
+WITH Author_Average_Rating AS (
+    SELECT
+        a.Author_ID,
+        a.Author_Name,
+        AVG(r.Rating) as AVERAGE_RATING
+    FROM
+        Author a
+        JOIN Book b ON b.Author_ID = a.Author_ID
+        JOIN Review r ON r.Isbn = b.Isbn
+    GROUP BY
+        a.Author_ID,
+        a.Author_Name
+)
+SELECT
+    aar.Author_Name,
+    aar.AVERAGE_RATING
+FROM
+    Author_Average_Rating aar
+WHERE
+    aar.AVERAGE_RATING = (
+        SELECT
+            MAX(AVERAGE_RATING)
+        FROM
+            Author_Average_Rating
+    )
+    OR aar.AVERAGE_RATING = (
+        SELECT
+            MIN(AVERAGE_RATING)
+        FROM
+            Author_Average_Rating
+    );
